@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/CaseManagement.AppHost/CaseManagement.AppHost.csproj" />
+    <Project Path="aspire/CaseManagement.ServiceDefaults/CaseManagement.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <Project Path="src/CaseManagement.Api/CaseManagement.Api.csproj" />
+    <Project Path="src/CaseManagement.Application/CaseManagement.Application.csproj" />
+    <Project Path="src/CaseManagement.Domain/CaseManagement.Domain.csproj" />
+    <Project Path="src/CaseManagement.Infrastructure/CaseManagement.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CaseManagement.Domain.Tests/CaseManagement.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
