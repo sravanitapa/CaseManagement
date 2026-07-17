@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using CaseManagement.Application.Common;
 using CaseManagement.Domain.Cases;
+using CaseManagement.Infrastructure.Identity.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaseManagement.Infrastructure.Persistence;
 
+//public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+//    :DbContext(options),IApplicationDbContext
+
+// IdentityDbContext<ApplicationUser> brings in AspNetUsers, AspNetRoles, and
+// the other Identity tables alongside our own domain tables.
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    :DbContext(options),IApplicationDbContext
+    : IdentityDbContext<ApplicationUser>(options), IApplicationDbContext
 {
     public DbSet<Case> Cases => Set<Case>();
 
