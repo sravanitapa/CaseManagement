@@ -89,6 +89,9 @@ dotnet run
 - Caching
 - Integration Tests
 
+## Architecture
+![Clean Architecture](docs/architecture.png)
+
 ## License
 
 This project is intended for learning and demonstration purposes.
