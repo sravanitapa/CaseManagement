@@ -3,6 +3,9 @@
     <Project Path="aspire/CaseManagement.AppHost/CaseManagement.AppHost.csproj" />
     <Project Path="aspire/CaseManagement.ServiceDefaults/CaseManagement.ServiceDefaults.csproj" />
   </Folder>
+  <Folder Name="/docs/">
+    <File Path="../Downloads/architecture.png" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path="README.md" />
   </Folder>
