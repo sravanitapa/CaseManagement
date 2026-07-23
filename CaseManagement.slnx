@@ -3,6 +3,9 @@
     <Project Path="aspire/CaseManagement.AppHost/CaseManagement.AppHost.csproj" />
     <Project Path="aspire/CaseManagement.ServiceDefaults/CaseManagement.ServiceDefaults.csproj" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/src/">
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
