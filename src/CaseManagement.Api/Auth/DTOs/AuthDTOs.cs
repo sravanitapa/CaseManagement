@@ -12,4 +12,10 @@ public record AuthResponse(
     string Email,
     IEnumerable<string> Roles,
     string Token,
-    DateTime ExpiresAt);
+    DateTime ExpiresAt,
+    string RefreshToken,
+    DateTime RefreshTokenExpiresAt);
+
+public record RefreshRequest(string RefreshToken);
+
+public record RevokeRequest(string RefreshToken);
