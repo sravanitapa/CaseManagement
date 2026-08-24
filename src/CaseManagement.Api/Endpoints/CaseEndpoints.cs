@@ -1,5 +1,6 @@
 using CaseManagement.Api.Infrastructure;
 using CaseManagement.Application.Cases;
+using CaseManagement.Infrastructure.Identity.Entities;
 
 namespace CaseManagement.Api.Endpoints;
 
@@ -13,34 +14,38 @@ public static class CaseEndpoints
         {
             var caseEntity = await service.CreateAsync(request, cancellationToken);
             return Results.Created($"/cases/{caseEntity.Id}", caseEntity);
-        }).AddEndpointFilter<ValidationFilter<CreateCaseRequest>>();
+        }).AddEndpointFilter<ValidationFilter<CreateCaseRequest>>()
+          .RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
 
         group.MapGet("/", async (ICaseService service, CancellationToken cancellationToken) =>
-            Results.Ok(await service.GetAllAsync(cancellationToken)));
+            Results.Ok(await service.GetAllAsync(cancellationToken)))
+            .RequireAuthorization();
 
         group.MapGet("/{id:guid}", async (Guid id, ICaseService service, CancellationToken cancellationToken) =>
         {
             var caseEntity = await service.GetByIdAsync(id, cancellationToken);
             return caseEntity is null ? Results.NotFound() : Results.Ok(caseEntity);
-        });
+        }).RequireAuthorization();
 
         group.MapPut("/{id:guid}", async (Guid id, UpdateCaseRequest request, ICaseService service, CancellationToken cancellationToken) =>
         {
             var updated = await service.UpdateAsync(id, request, cancellationToken);
             return updated ? Results.NoContent() : Results.NotFound();
-        }).AddEndpointFilter<ValidationFilter<UpdateCaseRequest>>();
+        }).AddEndpointFilter<ValidationFilter<UpdateCaseRequest>>()
+          .RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
 
         group.MapPost("/{id:guid}/CloseCaseAsync", async (Guid id, CloseCaseRequest request, ICaseService service, CancellationToken cancellationToken) =>
         {
             var caseEntityStatus = await service.CloseCaseAsync(id, request, cancellationToken);
             return caseEntityStatus ? Results.NoContent() : Results.NotFound();
-        }).AddEndpointFilter<ValidationFilter<CloseCaseRequest>>();
+        }).AddEndpointFilter<ValidationFilter<CloseCaseRequest>>()
+          .RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
 
         group.MapDelete("/{id:guid}", async (Guid id, ICaseService service, CancellationToken cancellationToken) =>
         {
             var deleted = await service.DeleteAsync(id, cancellationToken);
             return deleted ? Results.NoContent() : Results.NotFound();
-        });
+        }).RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
 
         return app;
     }

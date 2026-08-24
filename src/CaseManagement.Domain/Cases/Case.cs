@@ -69,16 +69,17 @@ public sealed class Case : Entity
         CaseStatus = CaseStatus.InProgress;
     }
 
-    public void CloseCase(CaseStatus CaseStatus, int evidenceCount)
+    public void CloseCase(int evidenceCount)
     {
         if (CaseStatus == CaseStatus.Closed)
         {
             throw new DomainException("Case is already closed.");
         }
-        if (EvidenceCount == 0)
+        if (EvidenceCount <= 0)
         {
             throw new DomainException("Cannot close a case without evidence");
         }
+        EvidenceCount = evidenceCount;
         CaseStatus = CaseStatus.Closed;
     }
 

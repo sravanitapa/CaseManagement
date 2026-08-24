@@ -58,7 +58,7 @@ public sealed class CaseService(IApplicationDbContext context):ICaseService
             return false;
         }
 
-        caseEntity.CloseCase(closeCaseRequest.CaseStatus, closeCaseRequest.evidenceCount);
+        caseEntity.CloseCase(closeCaseRequest.evidenceCount);
         await context.SaveChangesAsync(cancellationToken);
 
         return true;
