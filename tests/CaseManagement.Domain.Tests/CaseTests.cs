@@ -56,11 +56,21 @@ public class CaseTests
     }
 
     [Fact]
-    public void CloseCase_WithEvidenceCount()
+    public void CloseCase_WithValidEvidenceCount_ShouldCloseCase()
     {
         var caseEntity = CreateValidCase();
 
-        caseEntity.CloseCase(caseEntity.CaseStatus,2);
+        caseEntity.CloseCase(2);
 
+        Assert.Equal(CaseStatus.Closed, caseEntity.CaseStatus);    
+        Assert.Equal(2, caseEntity.EvidenceCount);
+    }
+
+    [Fact]
+    public void CloseCase_WithEvidenceCountLessThanAreEqualToZero_ShouldThrow()
+    {
+        var caseEntity = CreateValidCase();
+        //caseEntity.CloseCase(0);
+        Assert.Throws<DomainException>(() => caseEntity.CloseCase(0));
     }
 }
