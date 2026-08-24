@@ -19,7 +19,7 @@ public record UpdateCaseRequest(
     CaseStatus CaseStatus,
     string Synopsis);
 
-public record CloseCaseRequest(CaseStatus CaseStatus, int evidenceCount);
+public record CloseCaseRequest(int evidenceCount);
 
 public record CaseResponse(
     Guid Id,
