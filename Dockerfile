@@ -1,8 +1,3 @@
-#Use the .NET SDK image to build and run the application
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS base
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
 # ----- Build stage -----
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
@@ -29,13 +24,10 @@ FROM build AS publish
 RUN dotnet publish CaseManagement.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
 
 # ----- Final stage -----
-#FROM base AS final
-#WORKDIR /app
-#COPY --from=publish /app/publish .
-#ENTRYPOINT ["dotnet","CaseManagement.Api.dll"]
+
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 
 # Copy the build output from the build stage
-COPY --from=build /app/build .
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet","CaseManagement.Api.dll"]

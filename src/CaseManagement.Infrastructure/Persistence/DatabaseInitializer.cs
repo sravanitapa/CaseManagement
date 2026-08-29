@@ -37,6 +37,7 @@ public static class DatabaseInitializer
         if(await context.Cases.AnyAsync(cancellationToken))
         {
             logger.LogInformation("Datbase already seeded, skipping.");
+            return;
         }
 
         Case[] cases =

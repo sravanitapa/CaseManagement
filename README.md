@@ -10,9 +10,10 @@ This project demonstrates how to build a scalable, maintainable, and testable We
 
 - Clean Architecture
 - ASP.NET Core Web API
-- Entity Framework Core
-- SQL Server
-- JWT Authentication
+- Entity Framework Core with PostgreSQL
+- JWT Authentication with refresh token rotation
+- Role-based Authorization
+- Docker & Docker Compose
 - Dependency Injection
 - Global Exception Handling
 - RESTful APIs
@@ -32,58 +33,42 @@ CaseManagement
 │   └── ...
 │
 ├── tests
+│   └── CaseManagement.Api.Tests
 │   └── CaseManagement.Domain.Tests
-│
+|        
 └── CaseManagement.sln
 ```
 
 ## Prerequisites
 
-- .NET SDK 9.0 or later
+- .NET SDK 10.0 or later
+- Docker Desktop (for containerized run)
 - Visual Studio 2022/2026
-- SQL Server
 
 ## Getting Started
 
-### Clone the repository
+### Run with Docker (recommended)
+\`\`\`bash
+docker compose up --build
+\`\`\`
+API available at http://localhost:8080
 
-```bash
-git clone <repository-url>
-```
-
-### Restore packages
-
-```bash
+### Run locally
+\`\`\`bash
 dotnet restore
-```
-
-### Build the solution
-
-```bash
 dotnet build
-```
-
-### Run the application
-
-```bash
-dotnet run
-```
+dotnet run --project src/CaseManagement.Api
+\`\`\`
 
 ## Technologies Used
 
-- ASP.NET Core
-- Entity Framework Core
-- SQL Server
-- JWT Authentication
-- Swagger
-- xUnit
+- ASP.NET Core, Entity Framework Core, PostgreSQL, .NET Aspire
+- JWT Authentication + Refresh Tokens
+- Docker, Swagger, xUnit
 
 ## Future Enhancements
 
-- Role-based Authorization
-- Refresh Tokens
-- Docker Support
-- CI/CD Pipeline
+- CQRS with MediatR
 - Azure Deployment
 - Logging with Serilog
 - Caching

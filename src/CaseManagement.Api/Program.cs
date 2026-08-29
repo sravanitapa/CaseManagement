@@ -96,6 +96,9 @@ app.MapCaseEndpoints();
 
 app.Run();
 
+// Makes the implicitly-generated Program class public so the integration
+// test project (a separate assembly) can use WebApplicationFactory<Program>.
+public partial class Program { }
 //app.MapGet("/", () => "Hello World!");
 
 //app.Run();

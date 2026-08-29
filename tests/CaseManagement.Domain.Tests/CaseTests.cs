@@ -23,7 +23,7 @@ public class CaseTests
         Assert.Equal("Customer Complaint - Incorrect Invoice", caseEntity.Title);
         Assert.Equal("John Smith", caseEntity.AssignedTo);
         Assert.Equal(CaseStatus.Open, caseEntity.CaseStatus);
-        Assert.Equal(Guid.Empty, caseEntity.Id);
+        Assert.NotEqual(Guid.Empty, caseEntity.Id);
     }
 
     [Fact]

@@ -15,11 +15,8 @@ public class TokenService(IOptions<JwtSettings> jwtSettings):ITokenService
 
     public (string Token, DateTime ExpiresAt) CreateToken(Entities.ApplicationUser user, IEnumerable<string> roles)
     {
-        // Implementation for creating a JWT token for the given user and roles.
-        // This is a placeholder implementation. You would typically use a library like System.IdentityModel.Tokens.Jwt
-        // to create the token, sign it with the key from _settings, and set the expiration time.
+        // Builds a signed JWT with user claims and role claims.
         var expiresAt = DateTime.UtcNow.AddMinutes(_settings.ExpiryMinutes);
-        //var token = "GeneratedJWTToken"; // Replace with actual token generation logic.
         //Claims are the pieces of information we store inside the token
         var claims = new List<Claim>
         {
