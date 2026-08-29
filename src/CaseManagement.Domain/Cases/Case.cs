@@ -35,7 +35,7 @@ public sealed class Case : Entity
     //that must always be true,so an invalid Case can never exist.
     public static Case Create(string title, string assignedTo, DateTime dueDate, CaseStatus caseStatus, string synopsis)
     {
-        if (string.IsNullOrEmpty(title))
+        if (string.IsNullOrWhiteSpace(title))
         {
             throw new DomainException("A case must have a title.");
         }
@@ -75,7 +75,7 @@ public sealed class Case : Entity
         {
             throw new DomainException("Case is already closed.");
         }
-        if (EvidenceCount <= 0)
+        if (evidenceCount <= 0)
         {
             throw new DomainException("Cannot close a case without evidence");
         }
