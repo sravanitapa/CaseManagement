@@ -21,7 +21,8 @@ public sealed class Case : Entity
         Synopsis = synopsis;
         DueDate = dueDate;
     }
-    public string Title { get; private set; } = default!;//I know this property doesn't have a value right now, but don't warn me. I promise I'll initialize it later.
+    private readonly List<CaseNote> _caseNotes = new();
+    public string Title { get; private set; } = default!;//Set by the Create() factory; suppresses the nullable warning.
     //public string Description { get; private set; } = default!;
     public CaseStatus CaseStatus { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
@@ -30,6 +31,7 @@ public sealed class Case : Entity
     public int EvidenceCount { get; private set; }
     public string Synopsis { get; private set; } = default!;
     public DateTime DueDate { get; private set; }
+    public IReadOnlyCollection<CaseNote> CaseNotes =>_caseNotes.AsReadOnly();
 
     //A factory method is the only way to build a Case.It enforces the rules
     //that must always be true,so an invalid Case can never exist.
@@ -81,6 +83,21 @@ public sealed class Case : Entity
         }
         EvidenceCount = evidenceCount;
         CaseStatus = CaseStatus.Closed;
+    }
+
+    public CaseNote AddCaseNote(string authorName, string note)
+    {
+        if (string.IsNullOrWhiteSpace(authorName))
+        {
+            throw new DomainException("Author name cannot be empty.");
+        }
+        if (string.IsNullOrWhiteSpace(note))
+        {
+            throw new DomainException("Note cannot be empty.");
+        }
+        var caseNote = new CaseNote(Id, authorName.Trim(), note.Trim());
+        _caseNotes.Add(caseNote);
+        return caseNote;
     }
 
 }

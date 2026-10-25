@@ -1,6 +1,15 @@
 using CaseManagement.Api.Infrastructure;
 using CaseManagement.Application.Cases;
+using CaseManagement.Application.Cases.Commands.AddCaseNote;
+using CaseManagement.Application.Cases.Commands.CloseCase;
+using CaseManagement.Application.Cases.Commands.CreateCase;
+using CaseManagement.Application.Cases.Commands.DeleteCase;
+using CaseManagement.Application.Cases.Commands.UpdateCase;
+using CaseManagement.Application.Cases.Queries.Get;
+using CaseManagement.Application.Cases.Queries.GetCaseNotes;
+using CaseManagement.Application.Cases.Queries.List;
 using CaseManagement.Infrastructure.Identity.Entities;
+using MediatR;
 
 namespace CaseManagement.Api.Endpoints;
 
@@ -10,43 +19,63 @@ public static class CaseEndpoints
     {
         var group = app.MapGroup("/cases").WithTags("Cases");
 
-        group.MapPost("/", async (CreateCaseRequest request, ICaseService service, CancellationToken cancellationToken) =>
+        group.MapPost("/", async (CreateCaseCommand command, ISender mediator) =>
         {
-            var caseEntity = await service.CreateAsync(request, cancellationToken);
-            return Results.Created($"/cases/{caseEntity.Id}", caseEntity);
-        }).AddEndpointFilter<ValidationFilter<CreateCaseRequest>>()
-          .RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
+            var caseResponse = await mediator.Send(command);
+            return Results.Created($"/cases/{caseResponse.Id}", caseResponse);
+        }).RequireAuthorization(policy => policy.RequireRole(Roles.Admin));
 
-        group.MapGet("/", async (ICaseService service, CancellationToken cancellationToken) =>
-            Results.Ok(await service.GetAllAsync(cancellationToken)))
-            .RequireAuthorization();
-
-        group.MapGet("/{id:guid}", async (Guid id, ICaseService service, CancellationToken cancellationToken) =>
+        group.MapGet("/", async (ISender mediator) =>
         {
-            var caseEntity = await service.GetByIdAsync(id, cancellationToken);
-            return caseEntity is null ? Results.NotFound() : Results.Ok(caseEntity);
+            var cases = await mediator.Send(new ListCasesQuery());
+            return Results.Ok(cases);
         }).RequireAuthorization();
 
-        group.MapPut("/{id:guid}", async (Guid id, UpdateCaseRequest request, ICaseService service, CancellationToken cancellationToken) =>
+        group.MapGet("/{id:guid}", async (Guid id, ISender mediator) =>
         {
-            var updated = await service.UpdateAsync(id, request, cancellationToken);
+            var caseEntity = await mediator.Send(new GetCaseQuery(id));
+            if(caseEntity is null)
+            {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(caseEntity);
+        }).RequireAuthorization();
+
+        group.MapPut("/{id:guid}", async (Guid id,UpdateCaseRequest request, ISender mediator) =>
+        {
+            var command = new UpdateCaseCommand(id, request.Title, request.AssignedTo, request.DueDate, request.Synopsis);
+            var updated = await mediator.Send(command);
             return updated ? Results.NoContent() : Results.NotFound();
-        }).AddEndpointFilter<ValidationFilter<UpdateCaseRequest>>()
-          .RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
+        }).RequireAuthorization(policy => policy.RequireRole(Roles.Admin));
 
-        group.MapPost("/{id:guid}/CloseCaseAsync", async (Guid id, CloseCaseRequest request, ICaseService service, CancellationToken cancellationToken) =>
+        group.MapPost("/{id:guid}/CloseCaseAsync", async (Guid id,CloseCaseRequest request,ISender mediator) =>
         {
-            var caseEntityStatus = await service.CloseCaseAsync(id, request, cancellationToken);
+            var command = new CloseCaseCommand(id,request.EvidenceCount);
+            var caseEntityStatus = await mediator.Send(command);
             return caseEntityStatus ? Results.NoContent() : Results.NotFound();
-        }).AddEndpointFilter<ValidationFilter<CloseCaseRequest>>()
-          .RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
+        }).RequireAuthorization(policy => policy.RequireRole(Roles.Admin));
 
-        group.MapDelete("/{id:guid}", async (Guid id, ICaseService service, CancellationToken cancellationToken) =>
+        group.MapDelete("/{id:guid}", async(Guid id,ISender mediator) =>
         {
-            var deleted = await service.DeleteAsync(id, cancellationToken);
+            var command = new DeleteCaseCommand(id);
+            var deleted = await mediator.Send(command);
             return deleted ? Results.NoContent() : Results.NotFound();
-        }).RequireAuthorization(policy=>policy.RequireRole(Roles.Admin));
+        }).RequireAuthorization(policy => policy.RequireRole(Roles.Admin));
 
+        group.MapPost("/{id:guid}/notes", async (Guid id, AddCaseNoteRequest request, ISender mediator) =>
+        {
+            var command = new AddCaseNoteCommand(id, request.AuthorName, request.Content);
+            var caseNote = await mediator.Send(command);
+            return caseNote is null ? Results.NotFound() :
+            Results.Created($"/cases/{id}/notes/{caseNote.Id}", caseNote);
+        }).RequireAuthorization(policy => policy.RequireRole(Roles.Admin));
+
+        group.MapGet("/{id:guid}/notes", async (Guid id, ISender mediator) =>
+        {
+            var caseNotes = await mediator.Send(new GetCaseNotesQuery(id));
+            return Results.Ok(caseNotes);
+        }).RequireAuthorization();
         return app;
     }
 }

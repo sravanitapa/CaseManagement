@@ -33,6 +33,6 @@ internal sealed class CaseCloseValidator : AbstractValidator<CloseCaseRequest>
 {
     public CaseCloseValidator()
     {
-        RuleFor(x => x.evidenceCount).GreaterThan(0);
+        RuleFor(x => x.EvidenceCount).GreaterThan(0);
     }
 }

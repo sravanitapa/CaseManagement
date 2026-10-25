@@ -65,6 +65,34 @@ namespace CaseManagement.Infrastructure.Migrations
                     b.ToTable("cases", (string)null);
                 });
 
+            modelBuilder.Entity("CaseManagement.Domain.Cases.CaseNote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseId");
+
+                    b.ToTable("case_notes", (string)null);
+                });
+
             modelBuilder.Entity("CaseManagement.Infrastructure.Identity.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -302,6 +330,15 @@ namespace CaseManagement.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CaseManagement.Domain.Cases.CaseNote", b =>
+                {
+                    b.HasOne("CaseManagement.Domain.Cases.Case", null)
+                        .WithMany("CaseNotes")
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -351,6 +388,11 @@ namespace CaseManagement.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("CaseManagement.Domain.Cases.Case", b =>
+                {
+                    b.Navigation("CaseNotes");
                 });
 #pragma warning restore 612, 618
         }

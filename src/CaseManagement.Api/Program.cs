@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Reflection;
 using CaseManagement.Api.Endpoints;
 using CaseManagement.Api.Infrastructure;
 using CaseManagement.Application;
@@ -11,6 +12,7 @@ using CaseManagement.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Scalar.AspNetCore;
+using CaseManagement.Api.ExceptionHandling;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,9 +69,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 //Turn domain rule violations into 400 ProblemDetails responses.
+builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<DomainExceptionHandler>();
-
 var app = builder.Build();
 
 //DEMO ONLY:create and migrate the database, then seed sample data, so the app

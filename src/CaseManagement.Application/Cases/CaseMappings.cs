@@ -15,4 +15,11 @@ internal static class CaseMappings
        caseEntity.CaseStatus.ToString(),
        caseEntity.Synopsis,
        caseEntity.EvidenceCount);
+
+    public static CaseNoteResponse ToResponse(this CaseNote caseNote) => new(
+        caseNote.Id,
+        caseNote.CaseId,
+        caseNote.AuthorName,
+        caseNote.Content,
+        caseNote.CreatedAtUtc);
 }

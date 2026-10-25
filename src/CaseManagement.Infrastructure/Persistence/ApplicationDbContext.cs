@@ -20,6 +20,8 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<Case> Cases => Set<Case>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
+    public DbSet<CaseNote> CaseNotes => Set<CaseNote>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         //picks up every IEntityTypeConfiguration in this assembly automatically.

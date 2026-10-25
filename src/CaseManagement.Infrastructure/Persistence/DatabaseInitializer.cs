@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace CaseManagement.Infrastructure.Persistence;
 
@@ -20,6 +21,7 @@ public static class DatabaseInitializer
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
         // On a fresh database EF logs an error reading "_EFMigrationsHistory"
         // before that table exists - it catches it and creates the schema. Expected.
@@ -28,7 +30,7 @@ public static class DatabaseInitializer
         logger.LogInformation("Database migrations applied...");
 
         await SeedAsync(context, logger, cancellationToken);
-        await SeedIdentityAsync(userManager, roleManager, logger, cancellationToken);
+        await SeedIdentityAsync(userManager, roleManager, configuration,logger, cancellationToken);
     }
 
     private static async Task SeedAsync(ApplicationDbContext context,ILogger logger,CancellationToken cancellationToken)
@@ -57,8 +59,8 @@ public static class DatabaseInitializer
         logger.LogInformation("Seeded {Count} cases", cases.Length);
     }
 
-    private static async Task SeedIdentityAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger logger
-        , CancellationToken cancellationToken)
+    private static async Task SeedIdentityAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+        IConfiguration configuration, ILogger logger, CancellationToken cancellationToken)
     {
         //create the roles if they don't exist yet.
         foreach (var role in new[] { Roles.Admin, Roles.User })
@@ -70,7 +72,14 @@ public static class DatabaseInitializer
         }
 
         //Create a default admin account you can login with immediately.
-        const string adminEmail = "admin@codewithmukesh.com";
+        var adminEmail = configuration["Seed:AdminEmail"];
+        var adminPassword = configuration["Seed:AdminPassword"];
+        if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+        {
+            logger.LogInformation("No admin seed configured; skipping default admin.");
+            return;
+        }
+
         if (await userManager.FindByEmailAsync(adminEmail) is null)
         {
             var admin = new ApplicationUser
@@ -82,7 +91,12 @@ public static class DatabaseInitializer
                 EmailConfirmed = true
             };
 
-            await userManager.CreateAsync(admin, "Admin123!");
+            var result = await userManager.CreateAsync(admin, adminPassword);
+            if (!result.Succeeded)
+            {
+                logger.LogError("Admin seed failed: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+                return;
+            }
             await userManager.AddToRoleAsync(admin, Roles.Admin);
         }
     }

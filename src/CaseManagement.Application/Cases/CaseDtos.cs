@@ -19,7 +19,7 @@ public record UpdateCaseRequest(
     CaseStatus CaseStatus,
     string Synopsis);
 
-public record CloseCaseRequest(int evidenceCount);
+public record CloseCaseRequest(int EvidenceCount);
 
 public record CaseResponse(
     Guid Id,
@@ -28,4 +28,15 @@ public record CaseResponse(
     DateTime DueDate,
     string CaseStatus,
     string Synopsis,
-    int evidenceCount);
+    int EvidenceCount);
+
+public record CaseNoteResponse(
+    Guid Id,
+    Guid CaseId,
+    string AuthorName,
+    string Content,
+    DateTime CreatedAtUtc);
+
+public record AddCaseNoteRequest(
+    string AuthorName,
+    string Content);//CaseId comes from the route, not the request body.

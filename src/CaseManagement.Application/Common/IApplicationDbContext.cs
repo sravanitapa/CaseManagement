@@ -12,5 +12,7 @@ namespace CaseManagement.Application.Common;
 public interface IApplicationDbContext
 {
     DbSet<Case> Cases { get; }
+
+    DbSet<CaseNote> CaseNotes { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
