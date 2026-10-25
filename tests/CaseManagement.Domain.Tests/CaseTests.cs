@@ -73,4 +73,58 @@ public class CaseTests
         //caseEntity.CloseCase(0);
         Assert.Throws<DomainException>(() => caseEntity.CloseCase(0));
     }
+
+    [Fact]
+    public void CloseCase_WhenAlreadyClosed_Throws()
+    {
+        var caseEntity = CreateValidCase();
+        caseEntity.CloseCase(2);
+        var error=Assert.Throws<DomainException>(() => caseEntity.CloseCase(3));
+
+        Assert.Equal("Case is already closed.", error.Message);
+    }
+
+    [Fact]
+    public void UpdateDetails_WithValidData_UpdateProperties()
+    {
+        var caseEntity = CreateValidCase();
+        caseEntity.UpdateDetails("Updated Title", "Jane Doe", new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc), "Updated synopsis.");
+        Assert.Equal("Updated Title", caseEntity.Title);
+        Assert.Equal("Jane Doe", caseEntity.AssignedTo);
+        Assert.Equal("Updated synopsis.", caseEntity.Synopsis);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("  ")]
+    public void UpdateDetails_WithEmptyTitle_Throws(string badTitle)
+    {
+        var caseEntity = CreateValidCase();
+
+        Assert.Throws<DomainException>(()=>
+        caseEntity.UpdateDetails(badTitle, "Jane Doe", new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc), "Synopsis."));
+    }
+
+    [Fact]
+    public void AddCaseNote_WithValidData_AddsNoteToCollection()
+    {
+        var caseEntity = CreateValidCase();
+
+        var note = caseEntity.AddCaseNote("John Smith", "Called the customer, awaiting callback.");
+
+        Assert.Single(caseEntity.CaseNotes);
+        Assert.Equal("Called the customer, awaiting callback.", note.Content);
+        Assert.Equal(caseEntity.Id, note.CaseId);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void AddCaseNote_WithEmptyContent_Throws(string badContent)
+    {
+        var caseEntity = CreateValidCase();
+
+        Assert.Throws<DomainException>(() =>
+        caseEntity.AddCaseNote("John Smith", badContent));
+    }
 }
