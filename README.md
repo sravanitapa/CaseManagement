@@ -19,6 +19,7 @@ This project demonstrates how to build a scalable, maintainable, and testable We
 - RESTful APIs
 - Swagger / OpenAPI
 - Unit Testing
+- Case notes: one-to-many notes per case (`POST/GET /cases/{id}/notes`)
 
 ## Project Structure
 
@@ -48,34 +49,42 @@ CaseManagement
 ## Getting Started
 
 ### Run with Docker (recommended)
-\`\`\`bash
+```bash
 docker compose up --build
-\`\`\`
-API available at http://localhost:8080
+```
+API: http://localhost:8080 · Interactive docs: http://localhost:8080/scalar/v1
 
-### Run locally
-\`\`\`bash
-dotnet restore
-dotnet build
-dotnet run --project src/CaseManagement.Api
-\`\`\`
+### Run with .NET Aspire
+Set `CaseManagement.AppHost` as the startup project (Docker must be running).
+
+## Demo credentials (Development only)
+On first start in the Development environment, the app creates a default admin:
+
+| Email | Password |
+|-------|----------|
+| admin@casemanagement.local | Admin123! |
+
+These are **demo credentials for local use only**. They are created only when `ASPNETCORE_ENVIRONMENT=Development`. Change the JWT key and remove the seeded admin before any real deployment.
 
 ## Technologies Used
 
 - ASP.NET Core, Entity Framework Core, PostgreSQL, .NET Aspire
 - JWT Authentication + Refresh Tokens
-- Docker, Swagger, xUnit
+- Docker, OpenAPI + Scalar, xUnit
 
 ## Future Enhancements
 
-- CQRS with MediatR
 - Azure Deployment
 - Logging with Serilog
 - Caching
-- Integration Tests
 
 ## Architecture
 ![Clean Architecture](docs/architecture.png)
+
+## Try the API
+- OpenAPI spec: [`docs/openapi.json`](docs/openapi.json)
+- Postman: import `docs/CaseManagement.postman_collection.json`, run **Login** first (it stores the JWT automatically), then call any case endpoint.
+- Interactive docs: run the API in Development and open `/scalar/v1`.
 
 ## License
 
