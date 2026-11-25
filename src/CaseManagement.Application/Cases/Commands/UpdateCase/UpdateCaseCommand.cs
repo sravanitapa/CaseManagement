@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using MediatR;
+using CaseManagement.Application.Common.Messaging;
 
 
 namespace CaseManagement.Application.Cases.Commands.UpdateCase;

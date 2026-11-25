@@ -9,7 +9,7 @@ using CaseManagement.Application.Cases.Queries.Get;
 using CaseManagement.Application.Cases.Queries.GetCaseNotes;
 using CaseManagement.Application.Cases.Queries.List;
 using CaseManagement.Infrastructure.Identity.Entities;
-using MediatR;
+using CaseManagement.Application.Common.Messaging;
 
 namespace CaseManagement.Api.Endpoints;
 

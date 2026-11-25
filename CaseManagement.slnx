@@ -19,6 +19,7 @@
     <Project Path="src/CaseManagement.Infrastructure/CaseManagement.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/CaseManagement.Application.Tests/CaseManagement.Application.Tests.csproj" />
     <Project Path="tests/CaseManagement.Domain.Tests/CaseManagement.Domain.Tests.csproj" />
 	<Project Path="tests/CaseManagement.Api.Tests/CaseManagement.Api.Tests.csproj" />
   </Folder>

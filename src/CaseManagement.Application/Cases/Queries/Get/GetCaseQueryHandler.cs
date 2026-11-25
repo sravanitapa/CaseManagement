@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CaseManagement.Application.Common;
-using MediatR;
+using CaseManagement.Application.Common.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaseManagement.Application.Cases.Queries.Get;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CaseManagement.Application.Common;
 using CaseManagement.Domain.Cases;
-using MediatR;
+using CaseManagement.Application.Common.Messaging;
 
 namespace CaseManagement.Application.Cases.Commands.CreateCase;
 
